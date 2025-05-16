@@ -1,14 +1,29 @@
-version: '3.7'
-
 services:
-  environment:
-    container_name: environment
-    build:
-      context: .
-      dockerfile: dockerfile
+  app:
+    image: registry.digitalocean.com/myregistry-cloud/app:1.0.0
+    container_name: app
+    build: .
     ports:
       - 3005:3005
-    stdin_open: true
     environment:
       - CHOKIDAR_USEPOLLING=true
-    command: node app.js
+    deploy:
+      replicas: 5
+    healthcheck:
+      test: curl -sS http://127.0.0.1:3005 || echo 1
+      interval: 10s
+      timeout: 3s
+      retries: 12
+    update_config:
+      parallelism: 3
+      order: start-first
+      failure_action: rollback
+      delay: 10s
+    rollback_config:
+      parallelism: 0
+      order: stop-first
+    restart_policy:
+      condition: any
+      delay: 5s
+      max_attempts: 3
+      window: 120s
