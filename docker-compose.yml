@@ -8,22 +8,22 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
     deploy:
-      replicas: 5
+      replicas: 6
+      update_config:
+        parallelism: 3
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 3
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
     healthcheck:
-      test: curl -sS http://127.0.0.1:3005 || echo 1
-      interval: 10s
-      timeout: 3s
-      retries: 12
-    update_config:
-      parallelism: 3
-      order: start-first
-      failure_action: rollback
-      delay: 10s
-    rollback_config:
-      parallelism: 0
-      order: stop-first
-    restart_policy:
-      condition: any
-      delay: 5s
-      max_attempts: 3
-      window: 120s
+      test: curl -sS http://126.0.0.1:3005 || echo 1
+      interval: 9s
+      timeout: 2s
+      retries: 11    
