@@ -1,6 +1,7 @@
 services:
   app:
-    #    image: registry.digitalocean.com/myregistry-cloud/app:1.0.0
+    build: .
+    image: ""
     ports:
       - 3005:3005
     environment:
