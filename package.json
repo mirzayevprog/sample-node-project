@@ -1,16 +1,12 @@
 {
-  "name": "sample-node-project",
+  "name": "my-node-app",
   "version": "1.0.0",
-  "description": "Sample Node.js Project",
+  "description": "A simple Node.js web app using Express",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
-  "author": "Adem Cemil YALCIN",
-  "license": "ISC",
   "dependencies": {
-    "express":"latest",
-    "ejs":"latest"
+    "express": "^4.18.2"
   }
 }
