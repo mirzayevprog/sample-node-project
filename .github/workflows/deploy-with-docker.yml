@@ -11,7 +11,6 @@ jobs:
       image_name: registry.digitalocean.com/myregistry-cloud/myapp:${{ env.COMMIT_SHA }}
     steps:
       - uses: action/checkout@v4
-
       - name: Get short Git commit SHA
         id: vars
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
