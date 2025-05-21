@@ -45,6 +45,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /opt/my-app-docker
+            mv docker-compose-prod.yml docker-compose.yml
             docker login registry.digitalocean.com/myregistry-cloud -u davrdavr1704@gmail.com -p ${{ secrets.REGISTRY_TOKEN }}
             yq -i '.services.app.image = "${{ needs.build.outputs.image_name }}"' docker-compose.yml
             docker compose up -d --remove-orphans
