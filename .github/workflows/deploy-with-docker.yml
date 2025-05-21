@@ -15,7 +15,6 @@ jobs:
       - name: Get short Git commit SHA
         id: vars
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
       - name: Build and Push Docker
         working-directory: .
         run: |
