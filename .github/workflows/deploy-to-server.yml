@@ -21,8 +21,8 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "sample-node-project"
-          target: /root/sample-node-project
+          source: "./"
+          target: /root/sample-node-project/
 
       - name: Execute remote SSH commands using password
         uses: appleboy/ssh-action@v1
