@@ -1,8 +1,13 @@
-FROM node:18.20.8-alpine3.21
+FROM node:22.15.1-alpine3.21
+
 WORKDIR /app
-COPY package.json ./
-RUN npm install
+
+COPY package.json package-lock.json ./
+
+RUN npm ci
+
 COPY . .
-CMD ["node","app.js"]
+
 EXPOSE 3000
-#
+
+CMD ["npm", "start"]

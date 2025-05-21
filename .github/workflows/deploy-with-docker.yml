@@ -1,0 +1,52 @@
+name: Deploy to Server With Docker
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      image_name: registry.digitalocean.com/myregistry-cloud/myapp:${{ env.COMMIT_SHA }}
+    steps:
+      - uses: action/checkout@v4
+
+      - name: Get short Git commit SHA
+        id: vars
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Build and Push Docker
+        working-directory: .
+        run: |
+          docker build -t registry.digitalocean.com/myregistry-cloud/myapp:${{ env.COMMIT_SHA }} .
+          docker login registry.digitalocean.com/myregistry-cloud -u davrdavr1704@gmail.com -p ${{ secrets.REGISTRY_TOKEN }}
+          docker push registry.digitalocean.com/myregistry-cloud/myapp:${{ env.COMMIT_SHA }}
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: action/checkout@v4
+      - name: Copy File wia SSH
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "./docker-compose-prod.yml"
+          target: "/opt/my-app-docker/docker-compose.yml"
+#        strip_components: 2
+      - name: Restart docker compose
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /opt/my-app-docker
+#            mv docker-compose-prod.yaml docker-compose.yaml
+            docker login registry.digitalocean.com/myregistry-cloud -u davrdavr1704@gmail.com -p ${{ secrets.REGISTRY_TOKEN }}
+            yq -i '.services.app.image = "${{ needs.build.outputs.image_name }}"' docker-compose.yml
+            docker compose up -d --remove-orphans

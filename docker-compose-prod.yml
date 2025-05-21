@@ -1,0 +1,7 @@
+services:
+  app:
+    image: "registry.digitalocean.com/myregistry-cloud/myapp:1112213"
+    ports:
+      - 3000:3000
+    environment:
+      - CHOKIDAR_USEPOLLING=true
